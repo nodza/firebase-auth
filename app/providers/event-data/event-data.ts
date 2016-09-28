@@ -5,10 +5,12 @@ import * as firebase from 'firebase';
 export class EventData {
   public currentUser: any;
   public eventList: any;
+  public profilePictureRef: any;
 
   constructor() {
     this.currentUser = firebase.auth().currentUser.uid;
     this.eventList = firebase.database().ref('userProfile/' + this.currentUser + '/eventList');
+    this.profilePictureRef = firebase.storage().ref('/guestProfile/');
   }
 
   createEvent(eventName: string, eventDate: string, eventPrice: number, eventCost: number): any {
@@ -31,14 +33,22 @@ export class EventData {
     return this.eventList.child(eventId);
   }
 
-  addGuest(guestName, eventId, eventPrice): any {
+  addGuest(guestName, eventId, eventPrice, guestPicture = null): any {
     return this.eventList.child(eventId).child('guestList').push({
       guestName: guestName
-    }).then(() => {
-      this.eventList.child(eventId).child('revenue').transaction( (revenue) => {
-        revenue += eventPrice;
-        return revenue;
+    }).then((newGuest) => {
+      this.eventList.child(eventId).transaction( (event) => {
+        event.revenue += eventPrice;
+        return event;
       });
+      if (guestPicture != null) {
+        this.profilePictureRef.child(newGuest.key).child('profilePicture.png')
+          .putString(guestPicture, 'base64', {contentType: 'image/png'})
+          .then((savedPicture) => {
+            this.eventList.child(eventId).child('guestList').child(newGuest.key).child('profilePicture')
+              .set(savedPicture.downloadURL);
+          });
+      }
     });
   }
 

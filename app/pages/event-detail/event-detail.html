@@ -34,7 +34,13 @@
         <ion-item>
           <ion-label stacked>Name</ion-label>
           <ion-input [(ngModel)]="guestName" type="text"
-                     placeholder="What's your guest's name?"></ion-input>
+                     placeholder="What's your guest's name?">
+
+          </ion-input>
+          <span *ngIf="guestPicture">Picture taken!</span>
+          <button primary block (click)="takePicture()">
+            Take a Picture
+          </button>
         </ion-item>
 
         <button primary block (click)="addGuest(guestName)">

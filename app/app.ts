@@ -18,7 +18,8 @@ export class MyApp {
         apiKey: "AIzaSyAShB7f_bIKmBntV_6c8BI8VmOFQlzE3oE",
         authDomain: "moto-auth.firebaseapp.com",
         databaseURL: "https://moto-auth.firebaseio.com",
-        storageBucket: "",
+        storageBucket: "moto-auth.appspot.com",
+        messagingSenderId: "844825068725",
       };
       firebase.initializeApp(config);
 
